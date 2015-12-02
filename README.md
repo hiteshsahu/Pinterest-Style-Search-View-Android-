@@ -4,6 +4,10 @@ Directional Search View like Pinterest . This search view provide directional se
 Direction search algo will provide user a direction in search box. or example enterin Android will give suggestions like design,app, develop,phone etc.
 
 
+This Project is inspired from Pinterest and Roposo and it work in same fashion :-
+
+![Alt text](https://github.com/hiteshsahu/Pinterest-Style-Search-View-Android-/blob/master/Inspiration%20Art/history_track.png "Pinterset Search")
+
 Copyright 2015 Hitesh Kumar Sahu
 
 Licensed under the Apache License, Version 2.0 (the "License");

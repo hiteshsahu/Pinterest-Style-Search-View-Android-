@@ -11,7 +11,7 @@ This Project is inspired from Pinterest and Roposo and it work in same fashion :
 
 <h2> This is what I have achieved till now </h2>
 
-<h3>1) Directional Search</h3> :- Directional search guide user by displaying relevant tags as shown in picture below :-
+<h3> 1) Directional Search</h3> :- Directional search guide user by displaying relevant tags as shown in picture below :-
 
 ![Alt text](https://github.com/hiteshsahu/Pinterest-Style-Search-View-Android-/blob/master/ScreenShots/directionalSearch.png "Directional Search")
 

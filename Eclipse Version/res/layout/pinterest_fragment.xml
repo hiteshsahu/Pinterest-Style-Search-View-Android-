@@ -1,0 +1,94 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#fff"
+    tools:context="com.serveroverload.pinterest_search.ui.MainActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp" >
+
+        <LinearLayout
+            android:id="@+id/serch_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/remove_all"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@+id/separator_2"
+                android:background="@drawable/rounder_rectangle_serch_box"
+                android:ems="10"
+                android:hint="  Search"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:visibility="visible" />
+
+            <HorizontalScrollView
+                android:id="@+id/key_layout_holder"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounder_key_box"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:id="@+id/serch_key_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toLeftOf="@+id/search"
+                    android:orientation="horizontal" >
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/separator_2"
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/remove_all"
+            android:background="#FFF" />
+
+        <TextView
+            android:id="@+id/remove_all"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/separator1"
+            android:background="#BDBDBD"
+            android:gravity="center"
+            android:text="X"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/separator1"
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/search"
+            android:background="#FFF" />
+
+        <ImageView
+            android:id="@+id/search"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="#BDBDBD"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_search_white" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/demo_frag_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+</LinearLayout>

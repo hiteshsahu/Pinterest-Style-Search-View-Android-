@@ -7,6 +7,7 @@ Direction search algo will provide user a direction in search box. or example en
 This Project is inspired from Pinterest and Roposo and it work in same fashion :-
 
 <h2> This is what I Wanted to achieve </h2>
+
 ![Alt text](https://github.com/hiteshsahu/Pinterest-Style-Search-View-Android-/blob/master/Inspiration%20Art/next_lavel_direction.png "Pinterset Search")
 
 <h2> This is what I have achieved till now </h2>

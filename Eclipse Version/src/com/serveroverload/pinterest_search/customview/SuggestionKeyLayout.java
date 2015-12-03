@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.serveroverload.pinterestsearchbar.R;
 
-public class SerachKeyLayout extends RelativeLayout {
+public class SuggestionKeyLayout extends RelativeLayout {
 
 	private String searchkey;
 
-	public String getSearchkey() {
+	public String getSuggestionkey() {
 		return searchkey;
 	}
 
@@ -23,34 +23,33 @@ public class SerachKeyLayout extends RelativeLayout {
 		this.searchkey = searchkey;
 	}
 
-//	public SerachKeyLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-//		super(context, attrs, defStyleAttr);
-//
-//		View view = LayoutInflater.from(getContext()).inflate(
-//				R.layout.search_key, null);
-//		this.addView(view);
-//	}
-//
-//	public SerachKeyLayout(Context context, AttributeSet attrs) {
-//		super(context, attrs);
-//
-//		View view = LayoutInflater.from(getContext()).inflate(
-//				R.layout.search_key, null);
-//		this.addView(view);
-//	}
+	// public SerachKeyLayout(Context context, AttributeSet attrs, int
+	// defStyleAttr) {
+	// super(context, attrs, defStyleAttr);
+	//
+	// View view = LayoutInflater.from(getContext()).inflate(
+	// R.layout.search_key, null);
+	// this.addView(view);
+	// }
+	//
+	// public SerachKeyLayout(Context context, AttributeSet attrs) {
+	// super(context, attrs);
+	//
+	// View view = LayoutInflater.from(getContext()).inflate(
+	// R.layout.search_key, null);
+	// this.addView(view);
+	// }
 
-	public SerachKeyLayout(Context context, String keyValue) {
+	public SuggestionKeyLayout(Context context, String keyValue) {
 		super(context);
 
-		View view = LayoutInflater.from(getContext()).inflate(
-				R.layout.search_key_layout, null);
+		View view = LayoutInflater.from(getContext()).inflate(R.layout.suggestion_key_layout, null);
 
 		this.searchkey = keyValue;
 
-		((TextView) view.findViewById(R.id.key_value)).setText(keyValue);
+		((TextView) view.findViewById(R.id.suggestion_value)).setText(keyValue);
 
-		view.findViewById(R.id.key_holder).setBackgroundColor(
-				generateRandomColor());
+		view.findViewById(R.id.key_holder).setBackgroundColor(generateRandomColor());
 
 		this.addView(view);
 
@@ -60,7 +59,7 @@ public class SerachKeyLayout extends RelativeLayout {
 
 	public int generateRandomColor() {// This is the base color which will be
 										// mixed with the generated one
-		final int baseColor = Color.GRAY;
+		final int baseColor = Color.DKGRAY;
 		final int baseRed = Color.red(baseColor);
 		final int baseGreen = Color.green(baseColor);
 		final int baseBlue = Color.blue(baseColor);

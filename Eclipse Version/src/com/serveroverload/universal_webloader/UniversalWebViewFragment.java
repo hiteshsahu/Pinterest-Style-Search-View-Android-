@@ -18,7 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import com.example.pinterestsearchbar.R;
+import com.serveroverload.pinterestsearchbar.R;
 
 //No we dont give damn about Eclair or Cupcake
 @SuppressLint("NewApi")

@@ -34,7 +34,6 @@
                 android:text="Pinterest SearchView Demo"
                 android:textColor="#fff" />
 
-        
             <Button
                 android:id="@+id/google_search_demo"
                 android:layout_width="match_parent"
@@ -46,8 +45,8 @@
                 android:text="Google Search"
                 android:textColor="#FFF"
                 android:textSize="20sp" />
-            
-                <Button
+
+            <Button
                 android:id="@+id/youtube_serch_demo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,7 +57,6 @@
                 android:text="YouTube Sample"
                 android:textColor="#FFF"
                 android:textSize="20sp" />
-            
 
             <Button
                 android:id="@+id/music_serch_demo"
@@ -69,7 +67,21 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="25dp"
                 android:background="#ff669900"
-                android:text="Music Sample"
+                android:text="History Demo"
+                android:textColor="#FFF"
+                android:visibility="gone"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/directional_demo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="25dp"
+                android:background="#ff669900"
+                android:text="Direction Search With History"
                 android:textColor="#FFF"
                 android:textSize="20sp" />
         </LinearLayout>

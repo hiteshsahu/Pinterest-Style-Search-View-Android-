@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.example.pinterestsearchbar.R;
+import com.serveroverload.pinterestsearchbar.R;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity {
@@ -16,41 +16,59 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.demo_activity);
 
-		findViewById(R.id.youtube_serch_demo).setOnClickListener(
-				new OnClickListener() {
+		findViewById(R.id.youtube_serch_demo).setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						
-						toggleControlPanel(false);
-						
-						getFragmentManager()
-								.beginTransaction()
-								.add(R.id.frame_root,
-										PinterestFragment
-												.newInstance(PinterestFragment.YouTubeMode))
-								.commit();
+			@Override
+			public void onClick(View v) {
 
-					}
-				});
+				toggleControlPanel(false);
 
-		findViewById(R.id.google_search_demo).setOnClickListener(
-				new OnClickListener() {
+				getFragmentManager().beginTransaction()
+						.add(R.id.frame_root,
+								PinterestWebSearchFragment.newInstance(PinterestWebSearchFragment.YouTubeMode))
+						.commit();
 
-					@Override
-					public void onClick(View v) {
-						
-						toggleControlPanel(false);
-						
-						getFragmentManager()
-								.beginTransaction()
-								.add(R.id.frame_root,
-										PinterestFragment
-												.newInstance(PinterestFragment.GoogleMode))
-								.commit();
+			}
+		});
 
-					}
-				});
+		findViewById(R.id.google_search_demo).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				toggleControlPanel(false);
+
+				getFragmentManager().beginTransaction().add(R.id.frame_root,
+						PinterestWebSearchFragment.newInstance(PinterestWebSearchFragment.GoogleMode)).commit();
+
+			}
+		});
+//
+//		findViewById(R.id.music_serch_demo).setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//
+//				toggleControlPanel(false);
+//
+//				getFragmentManager().beginTransaction().add(R.id.frame_root, new PinterestSearchWithHistoryFragment())
+//						.commit();
+//
+//			}
+//		});
+
+		findViewById(R.id.directional_demo).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				toggleControlPanel(false);
+
+				getFragmentManager().beginTransaction()
+						.add(R.id.frame_root, new PinterestDirectionaSearchFragment()).commit();
+
+			}
+		});
 
 	}
 

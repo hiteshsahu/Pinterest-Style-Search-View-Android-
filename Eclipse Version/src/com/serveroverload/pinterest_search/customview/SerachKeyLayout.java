@@ -23,21 +23,6 @@ public class SerachKeyLayout extends RelativeLayout {
 		this.searchkey = searchkey;
 	}
 
-//	public SerachKeyLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-//		super(context, attrs, defStyleAttr);
-//
-//		View view = LayoutInflater.from(getContext()).inflate(
-//				R.layout.search_key, null);
-//		this.addView(view);
-//	}
-//
-//	public SerachKeyLayout(Context context, AttributeSet attrs) {
-//		super(context, attrs);
-//
-//		View view = LayoutInflater.from(getContext()).inflate(
-//				R.layout.search_key, null);
-//		this.addView(view);
-//	}
 
 	public SerachKeyLayout(Context context, String keyValue) {
 		super(context);

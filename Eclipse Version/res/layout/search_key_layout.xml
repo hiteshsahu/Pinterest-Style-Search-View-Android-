@@ -3,7 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="38dp"
     android:padding="2dp"
- 
     android:shadowColor="#fff"
     android:shadowDx="1"
     android:shadowDy="1"
@@ -13,7 +12,7 @@
         android:id="@+id/key_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/emerald" >
+        android:background="@drawable/rounder_rectangle_serch_box" >
 
         <RelativeLayout
             android:layout_width="wrap_content"

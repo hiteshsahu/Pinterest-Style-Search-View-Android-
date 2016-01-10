@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,14 +16,14 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.pinterestsearchbar.R;
 import com.serveroverload.pinterest_search.customview.SerachKeyLayout;
+import com.serveroverload.pinterest_search.helper.Util;
+import com.serveroverload.pinterestsearchbar.R;
 import com.serveroverload.universal_webloader.UniversalWebViewFragment;
 
 @SuppressLint("NewApi")
@@ -112,7 +111,7 @@ public class PinterestFragment extends Fragment {
 
 								searchKeyHolder.removeAllViews();
 
-								hidekeyboard(getActivity());
+								Util.hidekeyboard(getActivity());
 
 								keyList = new LinkedList<String>(Arrays
 										.asList(searchView.getText().toString()
@@ -231,20 +230,6 @@ public class PinterestFragment extends Fragment {
 		}
 
 		return rootView;
-	}
-
-	public static void hidekeyboard(Activity activity) {
-		InputMethodManager inputMethodManager = (InputMethodManager) activity
-				.getSystemService(Activity.INPUT_METHOD_SERVICE);
-		// Find the currently focused view, so we can grab the correct window
-		// token from it.
-		View view = activity.getCurrentFocus();
-		// If no view currently has focus, create a new one, just so we can grab
-		// a window token from it
-		if (view == null) {
-			view = new View(activity);
-		}
-		inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
 
 }

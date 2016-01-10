@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -33,6 +31,7 @@ import android.widget.TextView;
 import com.serveroverload.pinterest_search.customview.SerachKeyLayout;
 import com.serveroverload.pinterest_search.customview.SuggestionKeyLayout;
 import com.serveroverload.pinterest_search.helper.PreferenceHelper;
+import com.serveroverload.pinterest_search.helper.Util;
 import com.serveroverload.pinterest_search.model.GlobalDataHolder;
 import com.serveroverload.pinterestsearchbar.R;
 
@@ -51,23 +50,50 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 	private ArrayAdapter<String> adapter;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.pinterest_history_directional_fragment, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(
+				R.layout.pinterest_history_directional_fragment, container,
+				false);
 
 		// Get all views
-		keyLayoutHolder = (HorizontalScrollView) rootView.findViewById(R.id.key_layout_holder);
-		suggestionLayoutHolder = (HorizontalScrollView) rootView.findViewById(R.id.suggestion_key_layout_holder);
+		getAllViews(rootView);
 
-		searchView = (EditText) rootView.findViewById(R.id.search_view);
+		// Add Listeners
+		handleEventsOnView(rootView);
 
-		searchKeyHolder = (LinearLayout) rootView.findViewById(R.id.serch_key_holder);
-		suggestionKeyHolder = (LinearLayout) rootView.findViewById(R.id.suggestion_key_holder);
-		clearData = (TextView) rootView.findViewById(R.id.remove_all);
-
-		searchResult = (ListView) rootView.findViewById(R.id.demo_list);
-
+		// Shwo data from previous Hiostory
 		showSearchHistory();
 
+		// Handle back press
+		rootView.setFocusableInTouchMode(true);
+		rootView.requestFocus();
+		rootView.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+				if (event.getAction() == KeyEvent.ACTION_UP
+						&& keyCode == KeyEvent.KEYCODE_BACK) {
+
+					getActivity().getFragmentManager().popBackStack();
+
+					((MainActivity) getActivity()).toggleControlPanel(true);
+
+				}
+				return false;
+			}
+		});
+		// }
+
+		return rootView;
+	}
+
+	/**
+	 * @param rootView
+	 */
+	public void handleEventsOnView(View rootView) {
+		
 		// make edittext visible when user touches touch search keybox holder
 		keyLayoutHolder.setOnTouchListener(new OnTouchListener() {
 
@@ -94,6 +120,7 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+
 				searchKeyHolder.removeAllViews();
 				searchView.setText("");
 				keyLayoutHolder.setVisibility(View.GONE);
@@ -102,7 +129,7 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 				searchView.setSelection(searchView.getText().length());
 
 				// Open Keyboard to enter new search results
-				showKeyboard(getActivity());
+				Util.showKeyboard(getActivity());
 
 				// clear data
 				keyList.clear();
@@ -120,11 +147,13 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 		// Check when edittext is empty show suggestions from history
 		searchView.addTextChangedListener(new TextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
 			}
 
 			@Override
@@ -141,118 +170,132 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 		});
 
 		// Do serch on web on anywhere
-		rootView.findViewById(R.id.search).setOnClickListener(new OnClickListener() {
+		rootView.findViewById(R.id.search).setOnClickListener(
+				new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
+					@Override
+					public void onClick(View v) {
 
-				// Remove all suggestions
-				suggestionKeyHolder.removeAllViews();
-				suggestionLayoutHolder.setVisibility(View.GONE);
+						// Remove all suggestions
+						suggestionKeyHolder.removeAllViews();
+						suggestionLayoutHolder.setVisibility(View.GONE);
 
-				if (!searchView.getText().toString().isEmpty()) {
+						if (!searchView.getText().toString().isEmpty()) {
 
-					String tempKey = searchView.getText().toString().replaceAll("\\s+", "");
+							String tempKey = searchView.getText().toString()
+									.replaceAll("\\s+", "");
 
-					if (GlobalDataHolder.getGlobalDataHolderInstance().getDirctionalSearchMap().containsKey(tempKey)) {
+							if (GlobalDataHolder.getGlobalDataHolderInstance()
+									.getDirctionalSearchMap()
+									.containsKey(tempKey)) {
 
-						showSuggestions(tempKey);
+								showSuggestions(tempKey);
 
-					}
+							}
 
-					// display boxes
-					toggleBoxes();
+							// display boxes
+							toggleBoxes();
 
-					// hide keyboard while showing serach results
-					hidekeyboard(getActivity());
-				}
-
-				// Store search key in Preference
-				PreferenceHelper.getPrefernceHelperInstace(getActivity())
-						.saveSearchKey(searchView.getText().toString());
-				
-				showSearchHistory();
-
-			}
-		});
-
-		// If Done is pressed on Keyboard show search boxes and start searching
-		searchView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
-						|| event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-
-					// Remove all suggestions
-					suggestionKeyHolder.removeAllViews();
-					suggestionLayoutHolder.setVisibility(View.GONE);
-
-					if (!searchView.getText().toString().isEmpty()) {
-
-						toggleBoxes();
-
-						String tempKey = searchView.getText().toString().replaceAll("\\s+", "");
-
-						if (GlobalDataHolder.getGlobalDataHolderInstance().getDirctionalSearchMap()
-								.containsKey(tempKey)) {
-
-							showSuggestions(tempKey);
-
+							// hide keyboard while showing serach results
+							Util.hidekeyboard(getActivity());
 						}
 
-						// display boxes
-						toggleBoxes();
+						// Store search key in Preference
+						PreferenceHelper.getPrefernceHelperInstace(
+								getActivity()).saveSearchKey(
+								searchView.getText().toString());
 
-						// hide keyboard while showing serach results
-						hidekeyboard(getActivity());
+						showSearchHistory();
+
+					}
+				});
+
+		// If Done is pressed on Keyboard show search boxes and start searching
+		searchView
+				.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+
+					@Override
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						if (actionId == EditorInfo.IME_ACTION_SEARCH
+								|| actionId == EditorInfo.IME_ACTION_DONE
+								|| event.getAction() == KeyEvent.ACTION_DOWN
+								&& event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+
+							// Remove all suggestions
+							suggestionKeyHolder.removeAllViews();
+							suggestionLayoutHolder.setVisibility(View.GONE);
+
+							if (!searchView.getText().toString().isEmpty()) {
+
+								toggleBoxes();
+
+								String tempKey = searchView.getText()
+										.toString().replaceAll("\\s+", "");
+
+								if (GlobalDataHolder
+										.getGlobalDataHolderInstance()
+										.getDirctionalSearchMap()
+										.containsKey(tempKey)) {
+
+									showSuggestions(tempKey);
+
+								}
+
+								// display boxes
+								toggleBoxes();
+
+								// hide keyboard while showing serach results
+								Util.hidekeyboard(getActivity());
+							}
+
+							return true;
+						}
+						return false;
 					}
 
-					return true;
-				}
-				return false;
-			}
+				});
+	}
 
-		});
+	/**
+	 * @param rootView
+	 */
+	public void getAllViews(View rootView) {
+		keyLayoutHolder = (HorizontalScrollView) rootView
+				.findViewById(R.id.key_layout_holder);
+		suggestionLayoutHolder = (HorizontalScrollView) rootView
+				.findViewById(R.id.suggestion_key_layout_holder);
 
-		// Handle back press
-		rootView.setFocusableInTouchMode(true);
-		rootView.requestFocus();
-		rootView.setOnKeyListener(new View.OnKeyListener() {
+		searchView = (EditText) rootView.findViewById(R.id.search_view);
 
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
+		searchKeyHolder = (LinearLayout) rootView
+				.findViewById(R.id.serch_key_holder);
+		suggestionKeyHolder = (LinearLayout) rootView
+				.findViewById(R.id.suggestion_key_holder);
+		clearData = (TextView) rootView.findViewById(R.id.remove_all);
 
-				if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-
-					getActivity().getFragmentManager().popBackStack();
-
-					((MainActivity) getActivity()).toggleControlPanel(true);
-
-				}
-				return false;
-			}
-		});
-		// }
-
-		return rootView;
+		searchResult = (ListView) rootView.findViewById(R.id.demo_list);
 	}
 
 	private void showSearchHistory() {
 
 		// Display results from past search history
-		adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1,
-				PreferenceHelper.getPrefernceHelperInstace(getActivity()).getAllSearchHistory());
+		adapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_list_item_1, android.R.id.text1,
+				PreferenceHelper.getPrefernceHelperInstace(getActivity())
+						.getAllSearchHistory());
 
 		searchResult.setAdapter(adapter);
 
 		searchResult.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 
-				searchView.setText(
-						PreferenceHelper.getPrefernceHelperInstace(getActivity()).getAllSearchHistory().get(position));
+				searchView.setText(PreferenceHelper
+						.getPrefernceHelperInstace(getActivity())
+						.getAllSearchHistory().get(position));
 
 			}
 		});
@@ -265,10 +308,11 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 		searchKeyHolder.removeAllViews();
 
 		// Hide Keyboard while displaying result
-		hidekeyboard(getActivity());
+		Util.hidekeyboard(getActivity());
 
 		// Get all keywords
-		keyList = new LinkedList<String>(Arrays.asList(searchView.getText().toString().split(" ")));
+		keyList = new LinkedList<String>(Arrays.asList(searchView.getText()
+				.toString().split(" ")));
 
 		// Remove Blanks
 		keyList.remove("");
@@ -280,40 +324,41 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 			searchKeyLayout.setGravity(Gravity.CENTER);
 
 			// Handle cross in Boxes
-			searchKeyLayout.findViewById(R.id.cross).setOnClickListener(new OnClickListener() {
+			searchKeyLayout.findViewById(R.id.cross).setOnClickListener(
+					new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
+						@Override
+						public void onClick(View v) {
 
-					// Remove keyword from list
-					keyList.remove(searchKeyLayout.getSearchkey());
+							// Remove keyword from list
+							keyList.remove(searchKeyLayout.getSearchkey());
 
-					// if resultant list is empty
-					if (keyList.isEmpty()) {
+							// if resultant list is empty
+							if (keyList.isEmpty()) {
 
-						// Enable search box to start new search
-						keyLayoutHolder.setVisibility(View.VISIBLE);
-						searchView.setVisibility(View.GONE);
-						suggestionKeyHolder.removeAllViews();
-						suggestionLayoutHolder.setVisibility(View.GONE);
+								// Enable search box to start new search
+								keyLayoutHolder.setVisibility(View.VISIBLE);
+								searchView.setVisibility(View.GONE);
+								suggestionKeyHolder.removeAllViews();
+								suggestionLayoutHolder.setVisibility(View.GONE);
 
-					} else {
+							} else {
 
-						// Update text on edittext
+								// Update text on edittext
 
-						String newKey = "";
+								String newKey = "";
 
-						for (String key : keyList) {
-							newKey = newKey + " " + key;
-							searchView.setText(newKey);
+								for (String key : keyList) {
+									newKey = newKey + " " + key;
+									searchView.setText(newKey);
+								}
+							}
+
+							// Remove box
+							searchKeyHolder.removeView(searchKeyLayout);
+
 						}
-					}
-
-					// Remove box
-					searchKeyHolder.removeView(searchKeyLayout);
-
-				}
-			});
+					});
 
 			// Touched on KeyBox
 			searchKeyLayout.setOnClickListener(new OnClickListener() {
@@ -325,7 +370,7 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 					searchView.setVisibility(View.VISIBLE);
 					searchView.requestFocus();
 					searchView.setSelection(searchView.getText().length());
-					showKeyboard(getActivity());
+					Util.showKeyboard(getActivity());
 
 				}
 			});
@@ -348,7 +393,8 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 		suggestionKeyHolder.removeAllViews();
 		suggestionLayoutHolder.setVisibility(View.VISIBLE);
 
-		ArrayList<String> suggestions = GlobalDataHolder.getGlobalDataHolderInstance().getDirctionalSearchMap()
+		ArrayList<String> suggestions = GlobalDataHolder
+				.getGlobalDataHolderInstance().getDirctionalSearchMap()
 				.get(suggestionKey);
 
 		if (null != suggestions) {
@@ -357,7 +403,8 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 			for (String key : suggestions) {
 
 				final SuggestionKeyLayout suggestionKeyLayout;
-				suggestionKeyLayout = new SuggestionKeyLayout(getActivity(), key);
+				suggestionKeyLayout = new SuggestionKeyLayout(getActivity(),
+						key);
 				suggestionKeyLayout.setGravity(Gravity.CENTER);
 
 				// Handle cross in Boxes
@@ -367,73 +414,83 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 					public void onClick(View v) {
 
 						final SerachKeyLayout searchKeyLayout;
-						searchKeyLayout = new SerachKeyLayout(getActivity(), suggestionKeyLayout.getSuggestionkey());
+						searchKeyLayout = new SerachKeyLayout(getActivity(),
+								suggestionKeyLayout.getSuggestionkey());
+						
 						searchKeyLayout.setGravity(Gravity.CENTER);
 
 						// // add
-						 keyList.add(suggestionKeyLayout.getSuggestionkey());
-						
-						 // Update text on edittext
-						
-						 String newKey = "";
-						
-						 for (String key : keyList) {
-						 newKey = newKey + " " + key;
-						 searchView.setText(newKey);
-						 }
-						
-						
+						keyList.add(suggestionKeyLayout.getSuggestionkey());
+
+						// Update text on editText
+						String newKey = "";
+
+						for (String key : keyList) {
+							newKey = newKey + " " + key;
+							searchView.setText(newKey);
+						}
+
 						//
 						// Handle cross in Boxes
-						searchKeyLayout.findViewById(R.id.cross).setOnClickListener(new OnClickListener() {
+						searchKeyLayout.findViewById(R.id.cross)
+								.setOnClickListener(new OnClickListener() {
 
-							@Override
-							public void onClick(View v) {
+									@Override
+									public void onClick(View v) {
 
-								// Remove keyword from list
-								keyList.remove(searchKeyLayout.getSearchkey());
+										// Remove keyword from list
+										keyList.remove(searchKeyLayout
+												.getSearchkey());
 
-								// if resultant list is empty
-								if (keyList.isEmpty()) {
+										// if resultant list is empty
+										if (keyList.isEmpty()) {
 
-									// Enable search box to start new search
-									keyLayoutHolder.setVisibility(View.VISIBLE);
-									searchView.setVisibility(View.GONE);
-									suggestionKeyHolder.removeAllViews();
-									suggestionLayoutHolder.setVisibility(View.GONE);
+											// Enable search box to start new
+											// search
+											keyLayoutHolder
+													.setVisibility(View.VISIBLE);
+											searchView.setVisibility(View.GONE);
+											suggestionKeyHolder
+													.removeAllViews();
+											suggestionLayoutHolder
+													.setVisibility(View.GONE);
 
-								} else {
+										} else {
 
-									// Update text on edittext
+											// Update text on edittext
 
-									String newKey = "";
+											String newKey = "";
 
-									for (String key : keyList) {
-										newKey = newKey + " " + key;
-										searchView.setText(newKey);
+											for (String key : keyList) {
+												newKey = newKey + " " + key;
+												searchView.setText(newKey);
+											}
+										}
+
+										// Remove box
+										searchKeyHolder
+												.removeView(searchKeyLayout);
+
 									}
-								}
-
-								// Remove box
-								searchKeyHolder.removeView(searchKeyLayout);
-
-							}
-						});
+								});
 
 						// Touched on KeyBox
-						searchKeyLayout.setOnClickListener(new OnClickListener() {
-							@Override
-							public void onClick(View v) {
+						searchKeyLayout
+								.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
 
-								// Enable Edittext
-								keyLayoutHolder.setVisibility(View.GONE);
-								searchView.setVisibility(View.VISIBLE);
-								searchView.requestFocus();
-								searchView.setSelection(searchView.getText().length());
-								showKeyboard(getActivity());
+										// Enable Edittext
+										keyLayoutHolder
+												.setVisibility(View.GONE);
+										searchView.setVisibility(View.VISIBLE);
+										searchView.requestFocus();
+										searchView.setSelection(searchView
+												.getText().length());
+										Util.showKeyboard(getActivity());
 
-							}
-						});
+									}
+								});
 
 						// Add Box into horizontal Linear Layout
 						searchKeyHolder.addView(searchKeyLayout);
@@ -446,32 +503,6 @@ public class PinterestDirectionaSearchFragment extends Fragment {
 
 			}
 		}
-	}
-
-	public static void hidekeyboard(Activity activity) {
-		InputMethodManager inputMethodManager = (InputMethodManager) activity
-				.getSystemService(Activity.INPUT_METHOD_SERVICE);
-		// Find the currently focused view, so we can grab the correct window
-		// token from it.
-		View view = activity.getCurrentFocus();
-		// If no view currently has focus, create a new one, just so we can grab
-		// a window token from it
-		if (view == null) {
-			view = new View(activity);
-		}
-		inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-	}
-
-	public static void showKeyboard(Activity activity) {
-
-		View view = activity.getCurrentFocus();
-		// If no view currently has focus, create a new one, just so we can grab
-		// a window token from it
-		if (view == null) {
-			view = new View(activity);
-		}
-		((InputMethodManager) activity.getSystemService(activity.INPUT_METHOD_SERVICE))
-				.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 	}
 
 }
